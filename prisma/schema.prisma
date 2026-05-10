@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Idea {
+  id            String   @id @default(cuid())
+  title         String
+  problem       String
+  solution      String
+  audience      String
+  revenue       String
+  resources     String
+  risks         String
+  notes         String
+  createdAt     DateTime @default(now())
+}
