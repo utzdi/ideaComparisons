@@ -61,6 +61,12 @@ export default async function IdeaDetailPage({ params }: { params: Promise<{ id:
           >
             ← Alle Ideen
           </Link>
+          <Link
+            href={`/ideas/${idea.id}/edit`}
+            className="px-5 py-2.5 rounded-lg font-medium border border-indigo-700 text-indigo-400 hover:bg-indigo-950 transition-colors text-sm"
+          >
+            Bearbeiten
+          </Link>
           <DeleteButton id={idea.id} />
         </div>
       </div>
