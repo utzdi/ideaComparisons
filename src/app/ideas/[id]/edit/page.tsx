@@ -13,6 +13,7 @@ const fields = [
   { name: "resources", label: "Benötigte Ressourcen", placeholder: "Was wird gebraucht? (Zeit, Geld, Skills...)", required: false, type: "textarea" },
   { name: "risks", label: "Risiken", placeholder: "Mögliche Risiken oder Herausforderungen", required: false, type: "textarea" },
   { name: "notes", label: "Notizen", placeholder: "Weitere Gedanken...", required: false, type: "textarea" },
+  { name: "furtherPlanning", label: "Weitere Planung", placeholder: "Nächste Schritte, Meilensteine, offene Fragen...", required: false, type: "textarea" },
 ] as const;
 
 type FieldName = typeof fields[number]["name"];
@@ -20,7 +21,7 @@ type FormState = Record<FieldName, string>;
 
 const emptyForm: FormState = {
   title: "", problem: "", solution: "", audience: "",
-  revenue: "", resources: "", risks: "", notes: "",
+  revenue: "", resources: "", risks: "", notes: "", furtherPlanning: "",
 };
 
 export default function EditIdeaPage() {
@@ -46,6 +47,7 @@ export default function EditIdeaPage() {
           resources: data.resources ?? "",
           risks: data.risks ?? "",
           notes: data.notes ?? "",
+          furtherPlanning: data.furtherPlanning ?? "",
         });
         setFetching(false);
       });

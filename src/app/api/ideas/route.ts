@@ -17,14 +17,14 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { title, problem, solution, audience, revenue, resources, risks, notes } = body;
+  const { title, problem, solution, audience, revenue, resources, risks, notes, furtherPlanning } = body;
 
   if (!title || !problem || !solution || !audience) {
     return NextResponse.json({ error: "Pflichtfelder fehlen" }, { status: 400 });
   }
 
   const idea = await prisma.idea.create({
-    data: { title, problem, solution, audience, revenue: revenue ?? "", resources: resources ?? "", risks: risks ?? "", notes: notes ?? "" },
+    data: { title, problem, solution, audience, revenue: revenue ?? "", resources: resources ?? "", risks: risks ?? "", notes: notes ?? "", furtherPlanning: furtherPlanning ?? "" },
   });
 
   return NextResponse.json(idea, { status: 201 });

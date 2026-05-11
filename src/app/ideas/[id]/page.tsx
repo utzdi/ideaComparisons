@@ -52,6 +52,21 @@ export default async function IdeaDetailPage({ params }: { params: Promise<{ id:
               </div>
             );
           })}
+
+          {idea.furtherPlanning && (
+            <div className="bg-gray-900 border-l-4 border-teal-500 rounded-r-xl p-5">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400">Weitere Planung</h2>
+                <Link
+                  href={`/ideas/${idea.id}/planning`}
+                  className="text-xs text-teal-400 hover:text-teal-300 transition-colors"
+                >
+                  Separat ansehen →
+                </Link>
+              </div>
+              <p className="text-gray-100 leading-relaxed whitespace-pre-wrap line-clamp-4">{idea.furtherPlanning}</p>
+            </div>
+          )}
         </div>
 
         <div className="mt-8 flex gap-3">
@@ -67,6 +82,14 @@ export default async function IdeaDetailPage({ params }: { params: Promise<{ id:
           >
             Bearbeiten
           </Link>
+          {idea.furtherPlanning && (
+            <Link
+              href={`/ideas/${idea.id}/planning`}
+              className="px-5 py-2.5 rounded-lg font-medium border border-teal-700 text-teal-400 hover:bg-teal-950 transition-colors text-sm"
+            >
+              Planung
+            </Link>
+          )}
           <DeleteButton id={idea.id} />
         </div>
       </div>

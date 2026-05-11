@@ -13,6 +13,7 @@ const fields = [
   { name: "resources", label: "Benötigte Ressourcen", placeholder: "Was wird gebraucht? (Zeit, Geld, Skills...)", required: false, type: "textarea" },
   { name: "risks", label: "Risiken", placeholder: "Mögliche Risiken oder Herausforderungen", required: false, type: "textarea" },
   { name: "notes", label: "Notizen", placeholder: "Weitere Gedanken...", required: false, type: "textarea" },
+  { name: "furtherPlanning", label: "Weitere Planung", placeholder: "Nächste Schritte, Meilensteine, offene Fragen...", required: false, type: "textarea" },
 ] as const;
 
 type FieldName = typeof fields[number]["name"];
@@ -21,7 +22,7 @@ export default function NewIdeaPage() {
   const router = useRouter();
   const [form, setForm] = useState<Record<FieldName, string>>({
     title: "", problem: "", solution: "", audience: "",
-    revenue: "", resources: "", risks: "", notes: "",
+    revenue: "", resources: "", risks: "", notes: "", furtherPlanning: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

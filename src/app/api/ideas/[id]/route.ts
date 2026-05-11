@@ -11,7 +11,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const body = await req.json();
-  const { title, problem, solution, audience, revenue, resources, risks, notes } = body;
+  const { title, problem, solution, audience, revenue, resources, risks, notes, furtherPlanning } = body;
 
   if (!title || !problem || !solution || !audience) {
     return NextResponse.json({ error: "Pflichtfelder fehlen" }, { status: 400 });
@@ -19,7 +19,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   const idea = await prisma.idea.update({
     where: { id },
-    data: { title, problem, solution, audience, revenue: revenue ?? "", resources: resources ?? "", risks: risks ?? "", notes: notes ?? "" },
+    data: { title, problem, solution, audience, revenue: revenue ?? "", resources: resources ?? "", risks: risks ?? "", notes: notes ?? "", furtherPlanning: furtherPlanning ?? "" },
   });
   return NextResponse.json(idea);
 }

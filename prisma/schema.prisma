@@ -16,6 +16,7 @@ model Idea {
   revenue       String
   resources     String
   risks         String
-  notes         String
-  createdAt     DateTime @default(now())
+  notes           String
+  furtherPlanning String
+  createdAt       DateTime @default(now())
 }
