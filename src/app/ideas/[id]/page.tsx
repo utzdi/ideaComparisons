@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import DeleteButton from "./DeleteButton";
+import DocumentSection from "./DocumentSection";
 
 export const dynamic = "force-dynamic";
 
@@ -68,6 +69,8 @@ export default async function IdeaDetailPage({ params }: { params: Promise<{ id:
             </div>
           )}
         </div>
+
+        <DocumentSection ideaId={idea.id} />
 
         <div className="mt-8 flex gap-3">
           <Link
