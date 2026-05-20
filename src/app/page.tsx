@@ -17,12 +17,20 @@ export default async function HomePage() {
             <h1 className="text-3xl font-bold tracking-tight">Unsere Ideen</h1>
             <p className="text-gray-400 mt-1">{ideas.length} Idee{ideas.length !== 1 ? "n" : ""} gespeichert</p>
           </div>
-          <Link
-            href="/new"
-            className="bg-indigo-600 hover:bg-indigo-500 transition-colors px-5 py-2.5 rounded-lg font-medium text-sm"
-          >
-            + Neue Idee
-          </Link>
+          <div className="flex gap-3">
+            <Link
+              href="/dachdecker"
+              className="border border-gray-800 hover:border-gray-700 hover:bg-gray-900 text-gray-300 hover:text-white transition-colors px-4 py-2.5 rounded-lg font-medium text-sm flex items-center gap-1.5"
+            >
+              🏠 Dachdecker-Verzeichnis
+            </Link>
+            <Link
+              href="/new"
+              className="bg-indigo-600 hover:bg-indigo-500 transition-colors px-5 py-2.5 rounded-lg font-medium text-sm flex items-center justify-center"
+            >
+              + Neue Idee
+            </Link>
+          </div>
         </div>
 
         {ideas.length === 0 ? (
