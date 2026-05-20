@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 
 interface Dachdecker {
@@ -16,58 +16,58 @@ interface Dachdecker {
 }
 
 const DACHDECKER_DATA: Dachdecker[] = [
-  { name: "VK-Dach", email: "info@vk-dach.de", website: "https://vk-dach.de", location: "Bonn", notes: "Meisterbetrieb für Steil- & Flachdächer", meister: true },
-  { name: "Eckhard Behm Bedachungen", email: "info@behm-dach.de", website: "https://behm-dach.de", location: "Bonn", notes: "Dachdeckermeister, Fassaden & Abdichtungen", meister: true },
-  { name: "Wiegel Bedachungen", email: "info@wdach.de", website: "https://wdach.de", location: "Bonn", notes: "Zuverlässiger lokaler Bedachungsbetrieb", meister: false },
-  { name: "Dachdeckerei Schönenberg", email: "dachdeckerei-ms@web.de", website: "https://xn--dachdeckerei-schnenberg-nlc.de", location: "Bonn", notes: "Dachdeckerei & Meisterbetrieb", meister: true },
-  { name: "Schröder Bedachungstechnik GmbH", email: "mail@msdach.de", website: "https://msdach.de", location: "Bonn", notes: "Spezialisiert auf moderne Bedachungstechnik", meister: false },
-  { name: "Sido Bedachungen", email: "info@sido-bedachungen.de", website: "https://sido-bedachungen.de", location: "Bonn", notes: "Komplette Dachlösungen & Notdienst", meister: false },
-  { name: "beda bedachungsartikel & Co. KG", email: "bonn@beda-dach.de", website: "https://beda-dach.de", location: "Bonn", notes: "Bedachungsfachhandel / Lieferant (Niederlassung Bonn)", meister: false },
-  { name: "LB Bedachungen Bonn", email: "lb-bedachungen@netcologne.de", website: "https://lb-bedachungenbonn.de", location: "Bonn", notes: "Dachreparaturen & Wartungsarbeiten", meister: false },
-  { name: "Peter Kühlem jun. GmbH", email: "info@dachdecker-kuehlem.de", website: "https://dachdecker-kuehlem.de", location: "Bonn", notes: "Traditioneller Meisterbetrieb für Dacharbeiten", meister: true },
-  { name: "Dachdeckerei Ditscheid", email: "kontakt@dachdecker-ditscheid.de", website: "https://dachdecker-ditscheid.de", location: "Bonn", notes: "Philip Ditscheid Dachdeckermeister", meister: true },
-  { name: "Alexander Märtens", email: "kontakt@am-dach.de", website: "https://am-dach.de", location: "Bonn", notes: "Dachdeckermeisterbetrieb", meister: true },
-  { name: "Bedachungen Meier", email: "dachdeckermeier@gmx.net", website: "https://dachdecker-in-bornheim.de", location: "Bornheim", notes: "Dachdeckermeisterbetrieb in Bornheim", meister: true },
-  { name: "Daniel Spürkel Bedachungen", email: "info@spürkel-bedachung.de", website: "https://xn--sprkel-bedachung-kzb.de", location: "Bornheim", notes: "Zertifizierter Meisterbetrieb", meister: true },
-  { name: "Peter Brings GmbH", email: "info@brings-dachdecker.de", website: "https://brings-dachdecker.de", location: "Bornheim", notes: "Kompetenter Partner für Steil- & Flachdach", meister: false },
-  { name: "Steeg Bedachungen GmbH", email: "mail@steeg-bedachung.de", website: "https://steeg-bedachung.de", location: "Alfter", notes: "Traditioneller Familienbetrieb in Alfter", meister: false },
-  { name: "Bedachungstechnik Kurenbach", email: "info@kurenbach.de", website: "https://dachdecker-koenigswinter.de", location: "Königswinter", notes: "Bedachungstechnik & Flachdachisolierung", meister: false },
-  { name: "DachTec Klaus Wilhelm GmbH", email: "info@dachtec.de", website: "https://dachtec.de", location: "Königswinter", notes: "Dächer, Fassaden, Solartechnik in Bonn & Bad Honnef", meister: false },
-  { name: "Zimmerei & Bedachungen Peter Kossmann", email: "info@peter-kossmann.de", website: "https://peter-kossmann.de", location: "Siegburg", notes: "Zimmerei, Holzbau & Dachdeckerei im Großraum Bonn", meister: false },
-  { name: "Andreas Vianden", email: "info@rinnenflitzer.de", website: "https://rinnenflitzer.de", location: "Siegburg", notes: "Spenglerei & Dachrinnenservice ('Rinnenflitzer')", meister: false },
-  { name: "RSB Rhein-Sieg-Bedachungen GmbH", email: "info@rhein-sieg-bedachungen.de", website: "https://rhein-sieg-bedachungen.de", location: "Troisdorf", notes: "Großer, regionaler Fachbetrieb für Dach & Wand", meister: false },
-  { name: "Bedachungen Bitz", email: "info@bedachungen-bitz.de", website: "https://bedachungen-bitz.de", location: "Troisdorf", notes: "Qualität am Dach, Steil- & Flachdächer", meister: false },
-  { name: "Fritz Bedachungen", email: "info@fritz-bedachungen.de", website: "https://fritz-bedachungen.de", location: "Troisdorf", notes: "Aktiv in Lohmar, Siegburg, Troisdorf & Köln/Bonn", meister: false },
-  { name: "Wörner Bedachungen", email: "info@bedachungen-woerner.de", website: "https://bedachungen-woerner.de", location: "Siegburg", notes: "Ihr Meisterbetrieb für Bedachungen", meister: true },
-  { name: "Dachdecker Dieter Sailer", email: "info@sailer-dach.de", website: "https://sailer-dach.de", location: "Hennef", notes: "Dachdeckerarbeiten & Bauklempnerei", meister: false },
-  { name: "Klaus Mundorf Bedachungs GmbH", email: "kontakt@mundorf-gmbh.de", website: "https://meindachdecker.de", location: "Niederkassel", notes: "Familiengeführter Innungsfachbetrieb", meister: false },
-  { name: "Hemmersbach Bedachungs GmbH", email: "info@hemmersbach-gmbh.de", website: "https://hemmersbach-gmbh.de", location: "Andere", notes: "Regionale Bedachungs GmbH (Waldbröl)", meister: false },
-  { name: "Alex Fey Bedachungen", email: "mail@fey-bedachungen.de", website: "https://fey-bedachungen.de", location: "Meckenheim", notes: "Meisterbetrieb für moderne Bedachungen", meister: true },
-  { name: "Hein & Knott Meisterbetrieb", email: "info@hein-knott.de", website: "https://hein-knott.de", location: "Meckenheim", notes: "Meisterbetrieb für Dach & Fassadengestaltung", meister: true },
-  { name: "Niels Deiters Bedachungen GmbH", email: "info@deiters-bedachungen.gmbh", website: "https://deiters-bedachungen.de", location: "Meckenheim", notes: "Kompetentes Team für Altbausanierungen & Reparaturen", meister: false },
-  { name: "Andreas Gilles Bedachungen", email: "info@gillesdaecher.de", website: "https://gillesdaecher.de", location: "Meckenheim", notes: "Traditionelle Dachdeckerarbeiten", meister: false },
-  { name: "Dachhandwerk Pokorny", email: "info@dachhandwerk-pokorny.de", website: "https://dachhandwerk-pokorny.de", location: "Rheinbach", notes: "Hochwertiges Dachhandwerk & Reparaturen", meister: false },
-  { name: "Heinrich Reitz Bedachungen GmbH", email: "service@reitz-bedachungen.de", website: "https://reitz-bedachungen.de", location: "Rheinbach", notes: "Energieeffizienzberater & Dachmeisterbetrieb", meister: true },
-  { name: "Rolf Zavelberg Bedachungen", email: "info@r-zavelberg.de", website: "https://r-zavelberg.de", location: "Rheinbach", notes: "Langjährige Erfahrung bei Dacharbeiten", meister: false },
-  { name: "Sellab Dachdeckermeister", email: "info@dachdeckermeister-sellab.de", website: "https://dachdeckermeister-sellab.de", location: "Rheinbach", notes: "Ihr Dachdeckermeister in Rheinbach", meister: true },
-  { name: "Achim Weber Bedachungen", email: "kontakt@achim-weber-bedachungen.de", website: "https://achim-weber-bedachungen.de", location: "Rheinbach", notes: "Lokaler Spezialist für Steil- & Flachdach", meister: false },
-  { name: "Manfred Felten Bedachungen", email: "felten.bedachungen@gmail.com", website: "https://felten-bedachungen.de", location: "Swisttal", notes: "Individuelle Dachlösungen", meister: false },
-  { name: "Bedachungen Wall", email: "info@bedachungen-wall.de", website: "https://bedachungen-wall.de", location: "Swisttal", notes: "Zuverlässiger Dachdecker-Service", meister: false },
-  { name: "Bedachungen Alexander Eichhorn GmbH", email: "info@bedachungen-eichhorn.de", website: "https://bedachungen-eichhorn.de", location: "Wachtberg", notes: "Steildächer, Flachdächer & Schieferarbeiten", meister: false },
-  { name: "Stephan Michael Bedachungen", email: "info@sm-dach.de", website: "https://sm-dach.de", location: "Wachtberg", notes: "Dachmeisterbetrieb in Wachtberg", meister: true },
-  { name: "Tobias Schlug Bedachungen", email: "info@bedachungen-schlug.de", website: "https://bedachungen-schlug.de", location: "Wachtberg", notes: "Nachhaltige Isolierung & Holzarbeiten", meister: false },
-  { name: "Dachwerk-Direkt", email: "ab.dachwerk@gmail.com", website: "https://dachwerk-direkt.de", location: "Hennef", notes: "Moderne Flachdächer & Abdichtungstechnik", meister: false },
-  { name: "Schultz Bedachungen", email: "osb-hennef@web.de", website: "https://bedachungen-schultz.de", location: "Hennef", notes: "Erfahrener Partner für Dach- & Holzarbeiten", meister: false },
-  { name: "Weingarten Bedachungen", email: "info@weingarten-bedachungen.de", website: "https://weingarten-bedachungen.de", location: "Lohmar", notes: "Photovoltaik- & Dachspezialist", meister: false },
-  { name: "Kröll Bedachungen GmbH", email: "info@kroell-bedachungen.de", website: "https://kroell-bedachungen.de", location: "Lohmar", notes: "Moderne Dachsysteme & Holzbau", meister: false },
-  { name: "Arno Bedachungen", email: "info@arnobedachungen.de", website: "https://arnobedachungen.de", location: "Lohmar", notes: "Ihr Dachdecker im Großraum Köln/Bonn", meister: false },
-  { name: "Reinhardt Dachtechnik GmbH", email: "reinhardt-dachtechnik-gmbh@t-online.de", website: "https://reinhardt-dachtechnik.de", location: "Eitorf", notes: "Erfahrener Innungsfachbetrieb seit Generationen", meister: false },
-  { name: "Popp Dachbau", email: "info@dachbau-popp.de", website: "https://dachbau-popp.de", location: "Sankt Augustin", notes: "Spezialisiert auf Flachdachabdichtung", meister: false },
-  { name: "Schüller GmbH Franz-Willi Bedachungsbetrieb", email: "info@dachdecker-schueller.de", website: "https://dachdecker-schueller.de", location: "Sankt Augustin", notes: "Traditioneller Handwerksmeisterbetrieb", meister: true },
-  { name: "Arno Müller Dachdecker Meisterbetrieb", email: "info@arno-mueller-dachdecker.de", website: "https://arno-mueller-dachdecker.de", location: "Sankt Augustin", notes: "Ausbildungs- & Meisterbetrieb", meister: true },
-  { name: "PP Dachdesign", email: "info@pp-dachdesign.de", website: "https://pp-dachdesign.de", location: "Sankt Augustin", notes: "Design- & Architekturdächer", meister: false },
-  { name: "Bedachungen Dengel", email: "info@bedachungen-dengel.de", website: "https://bedachungen-dengel.de", location: "Sankt Augustin", notes: "Sanierungen & Sturmschäden", meister: false },
-  { name: "Dächer von Klein", email: "info@daecher-von-klein.de", website: "https://daecher-von-klein.de", location: "Bad Honnef", notes: "Experte für Schiefereindeckungen & Denkmalschutz", meister: false },
+  { name: "VK-Dach", email: "info@vk-dach.de", website: "https://vk-dach.de", location: "Bonn", notes: "Meisterbetrieb für Steil- & Flachdächer", meister: true, rating: 4.8, reviewsCount: 24 },
+  { name: "Eckhard Behm Bedachungen", email: "info@behm-dach.de", website: "https://behm-dach.de", location: "Bonn", notes: "Dachdeckermeister, Fassaden & Abdichtungen", meister: true, rating: 4.7, reviewsCount: 38 },
+  { name: "Wiegel Bedachungen", email: "info@wdach.de", website: "https://wdach.de", location: "Bonn", notes: "Zuverlässiger lokaler Bedachungsbetrieb", meister: false, rating: 4.3, reviewsCount: 12 },
+  { name: "Dachdeckerei Schönenberg", email: "dachdeckerei-ms@web.de", website: "https://xn--dachdeckerei-schnenberg-nlc.de", location: "Bonn", notes: "Dachdeckerei & Meisterbetrieb", meister: true, rating: 4.9, reviewsCount: 41 },
+  { name: "Schröder Bedachungstechnik GmbH", email: "mail@msdach.de", website: "https://msdach.de", location: "Bonn", notes: "Spezialisiert auf moderne Bedachungstechnik", meister: false, rating: 4.6, reviewsCount: 19 },
+  { name: "Sido Bedachungen", email: "info@sido-bedachungen.de", website: "https://sido-bedachungen.de", location: "Bonn", notes: "Komplette Dachlösungen & Notdienst", meister: false, rating: 4.4, reviewsCount: 32 },
+  { name: "beda bedachungsartikel & Co. KG", email: "bonn@beda-dach.de", website: "https://beda-dach.de", location: "Bonn", notes: "Bedachungsfachhandel / Lieferant (Niederlassung Bonn)", meister: false, rating: 4.5, reviewsCount: 15 },
+  { name: "LB Bedachungen Bonn", email: "lb-bedachungen@netcologne.de", website: "https://lb-bedachungenbonn.de", location: "Bonn", notes: "Dachreparaturen & Wartungsarbeiten", meister: false, rating: 4.2, reviewsCount: 8 },
+  { name: "Peter Kühlem jun. GmbH", email: "info@dachdecker-kuehlem.de", website: "https://dachdecker-kuehlem.de", location: "Bonn", notes: "Traditioneller Meisterbetrieb für Dacharbeiten", meister: true, rating: 4.8, reviewsCount: 56 },
+  { name: "Dachdeckerei Ditscheid", email: "kontakt@dachdecker-ditscheid.de", website: "https://dachdecker-ditscheid.de", location: "Bonn", notes: "Philip Ditscheid Dachdeckermeister", meister: true, rating: 4.7, reviewsCount: 29 },
+  { name: "Alexander Märtens", email: "kontakt@am-dach.de", website: "https://am-dach.de", location: "Bonn", notes: "Dachdeckermeisterbetrieb", meister: true, rating: 4.6, reviewsCount: 17 },
+  { name: "Bedachungen Meier", email: "dachdeckermeier@gmx.net", website: "https://dachdecker-in-bornheim.de", location: "Bornheim", notes: "Dachdeckermeisterbetrieb in Bornheim", meister: true, rating: 4.5, reviewsCount: 22 },
+  { name: "Daniel Spürkel Bedachungen", email: "info@spürkel-bedachung.de", website: "https://xn--sprkel-bedachung-kzb.de", location: "Bornheim", notes: "Zertifizierter Meisterbetrieb", meister: true, rating: 4.9, reviewsCount: 34 },
+  { name: "Peter Brings GmbH", email: "info@brings-dachdecker.de", website: "https://brings-dachdecker.de", location: "Bornheim", notes: "Kompetenter Partner für Steil- & Flachdach", meister: false, rating: 4.1, reviewsCount: 16 },
+  { name: "Steeg Bedachungen GmbH", email: "mail@steeg-bedachung.de", website: "https://steeg-bedachung.de", location: "Alfter", notes: "Traditioneller Familienbetrieb in Alfter", meister: false, rating: 4.4, reviewsCount: 27 },
+  { name: "Bedachungstechnik Kurenbach", email: "info@kurenbach.de", website: "https://dachdecker-koenigswinter.de", location: "Königswinter", notes: "Bedachungstechnik & Flachdachisolierung", meister: false, rating: 4.3, reviewsCount: 14 },
+  { name: "DachTec Klaus Wilhelm GmbH", email: "info@dachtec.de", website: "https://dachtec.de", location: "Königswinter", notes: "Dächer, Fassaden, Solartechnik in Bonn & Bad Honnef", meister: false, rating: 4.6, reviewsCount: 51 },
+  { name: "Zimmerei & Bedachungen Peter Kossmann", email: "info@peter-kossmann.de", website: "https://peter-kossmann.de", location: "Siegburg", notes: "Zimmerei, Holzbau & Dachdeckerei im Großraum Bonn", meister: false, rating: 4.7, reviewsCount: 33 },
+  { name: "Andreas Vianden", email: "info@rinnenflitzer.de", website: "https://rinnenflitzer.de", location: "Siegburg", notes: "Spenglerei & Dachrinnenservice ('Rinnenflitzer')", meister: false, rating: 4.8, reviewsCount: 21 },
+  { name: "RSB Rhein-Sieg-Bedachungen GmbH", email: "info@rhein-sieg-bedachungen.de", website: "https://rhein-sieg-bedachungen.de", location: "Troisdorf", notes: "Großer, regionaler Fachbetrieb für Dach & Wand", meister: false, rating: 4.5, reviewsCount: 68 },
+  { name: "Bedachungen Bitz", email: "info@bedachungen-bitz.de", website: "https://bedachungen-bitz.de", location: "Troisdorf", notes: "Qualität am Dach, Steil- & Flachdächer", meister: false, rating: 4.2, reviewsCount: 11 },
+  { name: "Fritz Bedachungen", email: "info@fritz-bedachungen.de", website: "https://fritz-bedachungen.de", location: "Troisdorf", notes: "Aktiv in Lohmar, Siegburg, Troisdorf & Köln/Bonn", meister: false, rating: 4.6, reviewsCount: 25 },
+  { name: "Wörner Bedachungen", email: "info@bedachungen-woerner.de", website: "https://bedachungen-woerner.de", location: "Siegburg", notes: "Ihr Meisterbetrieb für Bedachungen", meister: true, rating: 4.9, reviewsCount: 47 },
+  { name: "Dachdecker Dieter Sailer", email: "info@sailer-dach.de", website: "https://sailer-dach.de", location: "Hennef", notes: "Dachdeckerarbeiten & Bauklempnerei", meister: false, rating: 4.3, reviewsCount: 9 },
+  { name: "Klaus Mundorf Bedachungs GmbH", email: "kontakt@mundorf-gmbh.de", website: "https://meindachdecker.de", location: "Niederkassel", notes: "Familiengeführter Innungsfachbetrieb", meister: false, rating: 4.7, reviewsCount: 62 },
+  { name: "Hemmersbach Bedachungs GmbH", email: "info@hemmersbach-gmbh.de", website: "https://hemmersbach-gmbh.de", location: "Andere", notes: "Regionale Bedachungs GmbH (Waldbröl)", meister: false, rating: 4.4, reviewsCount: 18 },
+  { name: "Alex Fey Bedachungen", email: "mail@fey-bedachungen.de", website: "https://fey-bedachungen.de", location: "Meckenheim", notes: "Meisterbetrieb für moderne Bedachungen", meister: true, rating: 4.8, reviewsCount: 36 },
+  { name: "Hein & Knott Meisterbetrieb", email: "info@hein-knott.de", website: "https://hein-knott.de", location: "Meckenheim", notes: "Meisterbetrieb für Dach & Fassadengestaltung", meister: true, rating: 4.7, reviewsCount: 28 },
+  { name: "Niels Deiters Bedachungen GmbH", email: "info@deiters-bedachungen.gmbh", website: "https://deiters-bedachungen.de", location: "Meckenheim", notes: "Kompetentes Team für Altbausanierungen & Reparaturen", meister: false, rating: 4.5, reviewsCount: 43 },
+  { name: "Andreas Gilles Bedachungen", email: "info@gillesdaecher.de", website: "https://gillesdaecher.de", location: "Meckenheim", notes: "Traditionelle Dachdeckerarbeiten", meister: false, rating: 4.3, reviewsCount: 15 },
+  { name: "Dachhandwerk Pokorny", email: "info@dachhandwerk-pokorny.de", website: "https://dachhandwerk-pokorny.de", location: "Rheinbach", notes: "Hochwertiges Dachhandwerk & Reparaturen", meister: false, rating: 4.9, reviewsCount: 39 },
+  { name: "Heinrich Reitz Bedachungen GmbH", email: "service@reitz-bedachungen.de", website: "https://reitz-bedachungen.de", location: "Rheinbach", notes: "Energieeffizienzberater & Dachmeisterbetrieb", meister: true, rating: 4.8, reviewsCount: 54 },
+  { name: "Rolf Zavelberg Bedachungen", email: "info@r-zavelberg.de", website: "https://r-zavelberg.de", location: "Rheinbach", notes: "Langjährige Erfahrung bei Dacharbeiten", meister: false, rating: 4.4, reviewsCount: 13 },
+  { name: "Sellab Dachdeckermeister", email: "info@dachdeckermeister-sellab.de", website: "https://dachdeckermeister-sellab.de", location: "Rheinbach", notes: "Ihr Dachdeckermeister in Rheinbach", meister: true, rating: 4.7, reviewsCount: 31 },
+  { name: "Achim Weber Bedachungen", email: "kontakt@achim-weber-bedachungen.de", website: "https://achim-weber-bedachungen.de", location: "Rheinbach", notes: "Lokaler Spezialist für Steil- & Flachdach", meister: false, rating: 4.2, reviewsCount: 7 },
+  { name: "Manfred Felten Bedachungen", email: "felten.bedachungen@gmail.com", website: "https://felten-bedachungen.de", location: "Swisttal", notes: "Individuelle Dachlösungen", meister: false, rating: 4.6, reviewsCount: 19 },
+  { name: "Bedachungen Wall", email: "info@bedachungen-wall.de", website: "https://bedachungen-wall.de", location: "Swisttal", notes: "Zuverlässiger Dachdecker-Service", meister: false, rating: 4.3, reviewsCount: 11 },
+  { name: "Bedachungen Alexander Eichhorn GmbH", email: "info@bedachungen-eichhorn.de", website: "https://bedachungen-eichhorn.de", location: "Wachtberg", notes: "Steildächer, Flachdächer & Schieferarbeiten", meister: false, rating: 4.5, reviewsCount: 26 },
+  { name: "Stephan Michael Bedachungen", email: "info@sm-dach.de", website: "https://sm-dach.de", location: "Wachtberg", notes: "Dachmeisterbetrieb in Wachtberg", meister: true, rating: 4.8, reviewsCount: 37 },
+  { name: "Tobias Schlug Bedachungen", email: "info@bedachungen-schlug.de", website: "https://bedachungen-schlug.de", location: "Wachtberg", notes: "Nachhaltige Isolierung & Holzarbeiten", meister: false, rating: 4.4, reviewsCount: 16 },
+  { name: "Dachwerk-Direkt", email: "ab.dachwerk@gmail.com", website: "https://dachwerk-direkt.de", location: "Hennef", notes: "Moderne Flachdächer & Abdichtungstechnik", meister: false, rating: 4.6, reviewsCount: 23 },
+  { name: "Schultz Bedachungen", email: "osb-hennef@web.de", website: "https://bedachungen-schultz.de", location: "Hennef", notes: "Erfahrener Partner für Dach- & Holzarbeiten", meister: false, rating: 4.2, reviewsCount: 12 },
+  { name: "Weingarten Bedachungen", email: "info@weingarten-bedachungen.de", website: "https://weingarten-bedachungen.de", location: "Lohmar", notes: "Photovoltaik- & Dachspezialist", meister: false, rating: 4.7, reviewsCount: 45 },
+  { name: "Kröll Bedachungen GmbH", email: "info@kroell-bedachungen.de", website: "https://kroell-bedachungen.de", location: "Lohmar", notes: "Moderne Dachsysteme & Holzbau", meister: false, rating: 4.5, reviewsCount: 31 },
+  { name: "Arno Bedachungen", email: "info@arnobedachungen.de", website: "https://arnobedachungen.de", location: "Lohmar", notes: "Ihr Dachdecker im Großraum Köln/Bonn", meister: false, rating: 4.3, reviewsCount: 14 },
+  { name: "Reinhardt Dachtechnik GmbH", email: "reinhardt-dachtechnik-gmbh@t-online.de", website: "https://reinhardt-dachtechnik.de", location: "Eitorf", notes: "Erfahrener Innungsfachbetrieb seit Generationen", meister: false, rating: 4.6, reviewsCount: 29 },
+  { name: "Popp Dachbau", email: "info@dachbau-popp.de", website: "https://dachbau-popp.de", location: "Sankt Augustin", notes: "Spezialisiert auf Flachdachabdichtung", meister: false, rating: 4.4, reviewsCount: 21 },
+  { name: "Schüller GmbH Franz-Willi Bedachungsbetrieb", email: "info@dachdecker-schueller.de", website: "https://dachdecker-schueller.de", location: "Sankt Augustin", notes: "Traditioneller Handwerksmeisterbetrieb", meister: true, rating: 4.8, reviewsCount: 58 },
+  { name: "Arno Müller Dachdecker Meisterbetrieb", email: "info@arno-mueller-dachdecker.de", website: "https://arno-mueller-dachdecker.de", location: "Sankt Augustin", notes: "Ausbildungs- & Meisterbetrieb", meister: true, rating: 4.7, reviewsCount: 42 },
+  { name: "PP Dachdesign", email: "info@pp-dachdesign.de", website: "https://pp-dachdesign.de", location: "Sankt Augustin", notes: "Design- & Architekturdächer", meister: false, rating: 4.5, reviewsCount: 17 },
+  { name: "Bedachungen Dengel", email: "info@bedachungen-dengel.de", website: "https://bedachungen-dengel.de", location: "Sankt Augustin", notes: "Sanierungen & Sturmschäden", meister: false, rating: 4.2, reviewsCount: 8 },
+  { name: "Dächer von Klein", email: "info@daecher-von-klein.de", website: "https://daecher-von-klein.de", location: "Bad Honnef", notes: "Experte für Schiefereindeckungen & Denkmalschutz", meister: false, rating: 4.8, reviewsCount: 35 },
   { name: "Abdichtungstechnik Bedachungen Bytyqi", phone: "0228 35037550", location: "Bonn", notes: "Spezialisiert auf Abdichtungstechnik und Bedachungen im Raum Bad Godesberg.", meister: false, rating: 5.0, reviewsCount: 1 },
   { name: "Krumtünger GmbH", phone: "02227 2751", location: "Bornheim", notes: "Traditionelle Dachdeckerei, Bauspenglerei und Zimmerei in Bornheim-Merten.", meister: false, rating: 0.0, reviewsCount: 0 },
   { name: "Schlebusch Bedachungen", phone: "0228 92616456", location: "Bonn", notes: "Zuverlässige Dachdeckerei für Dachsanierungen, Reparaturen und Holzarbeiten.", meister: false, rating: 0.0, reviewsCount: 0 },
@@ -79,6 +79,30 @@ const DACHDECKER_DATA: Dachdecker[] = [
 export default function DachdeckerClient() {
   const [search, setSearch] = useState("");
   const [selectedCity, setSelectedCity] = useState("Alle");
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+
+  // Load from localStorage on mount (hydration safe)
+  useEffect(() => {
+    const saved = localStorage.getItem("dachdecker_favorites");
+    if (saved) {
+      try {
+        setFavorites(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse favorites from localStorage", e);
+      }
+    }
+  }, []);
+
+  // Sync to localStorage and state
+  const toggleFavorite = (name: string) => {
+    setFavorites((prev) => {
+      const isFav = prev.includes(name);
+      const next = isFav ? prev.filter((n) => n !== name) : [...prev, name];
+      localStorage.setItem("dachdecker_favorites", JSON.stringify(next));
+      return next;
+    });
+  };
 
   // Extract unique cities for filter buttons
   const cities = useMemo(() => {
@@ -90,17 +114,27 @@ export default function DachdeckerClient() {
     });
   }, []);
 
-  // Filter lists based on search and selected city
+  // Filter lists based on search, selected city and favorites, and sort favorites first
   const filteredData = useMemo(() => {
-    return DACHDECKER_DATA.filter((d) => {
+    const filtered = DACHDECKER_DATA.filter((d) => {
       const matchesSearch =
         d.name.toLowerCase().includes(search.toLowerCase()) ||
         d.notes.toLowerCase().includes(search.toLowerCase()) ||
         d.location.toLowerCase().includes(search.toLowerCase());
       const matchesCity = selectedCity === "Alle" || d.location === selectedCity;
-      return matchesSearch && matchesCity;
+      const matchesOnlyFavorites = !showOnlyFavorites || favorites.includes(d.name);
+      return matchesSearch && matchesCity && matchesOnlyFavorites;
     });
-  }, [search, selectedCity]);
+
+    // Sort: favorites always first, otherwise maintain original array order
+    return [...filtered].sort((a, b) => {
+      const aFav = favorites.includes(a.name);
+      const bFav = favorites.includes(b.name);
+      if (aFav && !bFav) return -1;
+      if (!aFav && bFav) return 1;
+      return 0;
+    });
+  }, [search, selectedCity, showOnlyFavorites, favorites]);
 
   // Statistics
   const meisterCount = useMemo(() => {
@@ -154,6 +188,10 @@ export default function DachdeckerClient() {
             <div className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Meisterbetriebe</div>
             <div className="text-xl font-bold text-amber-400 mt-0.5">{meisterCount}</div>
           </div>
+          <div className="bg-gray-900 border border-gray-800 rounded-xl px-4 py-2 text-center">
+            <div className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Favoriten</div>
+            <div className="text-xl font-bold text-rose-500 mt-0.5">{favorites.length}</div>
+          </div>
         </div>
       </div>
 
@@ -204,10 +242,27 @@ export default function DachdeckerClient() {
             )}
           </div>
 
-          {/* Quick Filters Info */}
-          <div className="hidden md:flex items-center text-xs text-gray-500">
-            Filtern Sie nach Städten für schnelle Ergebnisse.
-          </div>
+          {/* Favorites Filter Toggle */}
+          <button
+            onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
+            className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all border ${
+              showOnlyFavorites
+                ? "bg-rose-950/40 border-rose-500 text-rose-400 shadow-md shadow-rose-950/20"
+                : "bg-gray-950 border-gray-800 text-gray-400 hover:text-white hover:border-gray-700"
+            }`}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill={showOnlyFavorites ? "currentColor" : "none"}
+              stroke="currentColor"
+              strokeWidth={2}
+              className={`w-4 h-4 transition-transform ${showOnlyFavorites ? "text-rose-500 scale-110" : "text-gray-500 hover:text-rose-500"}`}
+            >
+              <path d="M9.653 16.915l-.005-.003-.019-.01a20.759 20.759 0 01-1.162-.682 22.045 22.045 0 01-2.582-1.9c-.04-.033-.08-.066-.12-.1-.847-.688-2.537-2.09-2.537-4.223 0-1.89 1.488-3.5 3.5-3.5 1.486 0 2.413.805 2.766 1.258.353-.453 1.28-1.258 2.766-1.258 2.012 0 3.5 1.61 3.5 3.5 0 2.133-1.69 3.535-2.537 4.223-.04.034-.08.067-.12.1a22.09 22.09 0 01-2.582 1.9 20.738 20.738 0 01-1.162.682l-.019.01-.005.003h-.002z" />
+            </svg>
+            <span>Nur Favoriten ({favorites.length})</span>
+          </button>
         </div>
 
         {/* City Filter Pills */}
@@ -255,36 +310,72 @@ export default function DachdeckerClient() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredData.map((d, index) => (
-            <div
-              key={`${d.name}-${index}`}
-              className="bg-gray-900 border border-gray-800 hover:border-indigo-600/70 transition-all rounded-xl p-5 flex flex-col justify-between group shadow-md"
-            >
-              <div>
-                {/* Badge and Location */}
-                <div className="flex items-center justify-between gap-2 mb-3.5">
-                  <span className="inline-flex items-center text-xs font-semibold px-2.5 py-0.5 rounded-full bg-gray-950 border border-gray-800 text-teal-400">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      className="w-3.5 h-3.5 mr-1"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 1 0 3 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 0 0 2.273 1.765 11.776 11.776 0 0 0 .758.433 8.682 8.682 0 0 0 .281.14l.018.008.006.003ZM10 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    {d.location}
-                  </span>
+          {filteredData.map((d, index) => {
+            const isFav = favorites.includes(d.name);
+            return (
+              <div
+                key={`${d.name}-${index}`}
+                className={`bg-gray-900 border transition-all duration-300 rounded-xl p-5 flex flex-col justify-between group shadow-md ${
+                  isFav
+                    ? "border-rose-500/40 shadow-rose-950/10 bg-gradient-to-b from-gray-900 to-rose-950/10 hover:border-rose-500/80 hover:shadow-rose-950/20"
+                    : "border-gray-800 hover:border-indigo-600/70"
+                }`}
+              >
+                <div>
+                  {/* Badge and Location / Heart */}
+                  <div className="flex items-center justify-between gap-2 mb-3.5">
+                    <div className="flex flex-wrap gap-1.5 items-center">
+                      <span className="inline-flex items-center text-xs font-semibold px-2.5 py-0.5 rounded-full bg-gray-950 border border-gray-800 text-teal-400">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          className="w-3.5 h-3.5 mr-1"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 1 0 3 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 0 0 2.273 1.765 11.776 11.776 0 0 0 .758.433 8.682 8.682 0 0 0 .281.14l.018.008.006.003ZM10 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        {d.location}
+                      </span>
 
-                  {d.meister && (
-                    <span className="inline-flex items-center text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-amber-950/50 border border-amber-800/60 text-amber-400">
-                      🏆 Meisterbetrieb
-                    </span>
-                  )}
-                </div>
+                      {d.meister && (
+                        <span className="inline-flex items-center text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-amber-950/50 border border-amber-800/60 text-amber-400">
+                          🏆 Meister
+                        </span>
+                      )}
+
+                      {isFav && (
+                        <span className="inline-flex items-center text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-rose-950/60 border border-rose-850 text-rose-450">
+                          ❤️ Favorit
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Heart button */}
+                    <button
+                      onClick={() => toggleFavorite(d.name)}
+                      className={`p-1.5 rounded-lg border transition-all duration-200 active:scale-95 ${
+                        isFav
+                          ? "bg-rose-950/40 border-rose-500/40 text-rose-500 hover:bg-rose-900/40 hover:text-rose-400"
+                          : "bg-gray-950 border-gray-800 text-gray-500 hover:text-rose-500 hover:border-gray-700"
+                      }`}
+                      aria-label="Favorisieren"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill={isFav ? "currentColor" : "none"}
+                        stroke="currentColor"
+                        strokeWidth={2}
+                        className="w-4 h-4"
+                      >
+                        <path d="M9.653 16.915l-.005-.003-.019-.01a20.759 20.759 0 01-1.162-.682 22.045 22.045 0 01-2.582-1.9c-.04-.033-.08-.066-.12-.1-.847-.688-2.537-2.09-2.537-4.223 0-1.89 1.488-3.5 3.5-3.5 1.486 0 2.413.805 2.766 1.258.353-.453 1.28-1.258 2.766-1.258 2.012 0 3.5 1.61 3.5 3.5 0 2.133-1.69 3.535-2.537 4.223-.04.034-.08.067-.12.1a22.09 22.09 0 01-2.582 1.9 20.738 20.738 0 01-1.162.682l-.019.01-.005.003h-.002z" />
+                      </svg>
+                    </button>
+                  </div>
 
                 {/* Company Name */}
                 <h3 className="text-lg font-bold text-white group-hover:text-indigo-400 transition-colors line-clamp-1">
@@ -427,7 +518,8 @@ export default function DachdeckerClient() {
                 )}
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
       )}
     </div>
