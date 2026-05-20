@@ -5,11 +5,14 @@ import Link from "next/link";
 
 interface Dachdecker {
   name: string;
-  email: string;
-  website: string;
+  email?: string;
+  phone?: string;
+  website?: string;
   location: string;
   notes: string;
   meister: boolean;
+  rating?: number;
+  reviewsCount?: number;
 }
 
 const DACHDECKER_DATA: Dachdecker[] = [
@@ -65,6 +68,12 @@ const DACHDECKER_DATA: Dachdecker[] = [
   { name: "PP Dachdesign", email: "info@pp-dachdesign.de", website: "https://pp-dachdesign.de", location: "Sankt Augustin", notes: "Design- & Architekturdächer", meister: false },
   { name: "Bedachungen Dengel", email: "info@bedachungen-dengel.de", website: "https://bedachungen-dengel.de", location: "Sankt Augustin", notes: "Sanierungen & Sturmschäden", meister: false },
   { name: "Dächer von Klein", email: "info@daecher-von-klein.de", website: "https://daecher-von-klein.de", location: "Bad Honnef", notes: "Experte für Schiefereindeckungen & Denkmalschutz", meister: false },
+  { name: "Abdichtungstechnik Bedachungen Bytyqi", phone: "0228 35037550", location: "Bonn", notes: "Spezialisiert auf Abdichtungstechnik und Bedachungen im Raum Bad Godesberg.", meister: false, rating: 5.0, reviewsCount: 1 },
+  { name: "Krumtünger GmbH", phone: "02227 2751", location: "Bornheim", notes: "Traditionelle Dachdeckerei, Bauspenglerei und Zimmerei in Bornheim-Merten.", meister: false, rating: 0.0, reviewsCount: 0 },
+  { name: "Schlebusch Bedachungen", phone: "0228 92616456", location: "Bonn", notes: "Zuverlässige Dachdeckerei für Dachsanierungen, Reparaturen und Holzarbeiten.", meister: false, rating: 0.0, reviewsCount: 0 },
+  { name: "Reuter und Grommes GmbH", phone: "0228 281795", location: "Bonn", notes: "Klassischer Dachdecker-Innungsbetrieb in Bonn-Ippendorf.", meister: false, rating: 0.0, reviewsCount: 0 },
+  { name: "Andreas Schildgen A.S. Bedachungen", phone: "0228 857760", location: "Bonn", notes: "Dachdecker- und Zimmererarbeiten, Dachausbau und Wärmeschutz in Bonn-Mehlem.", meister: false, rating: 0.0, reviewsCount: 0 },
+  { name: "Michael Becker Bedachungen", phone: "0228 3692670", location: "Alfter", notes: "Zuverlässiger Dachdeckerbetrieb in Alfter für Reparaturarbeiten und Kleinstreparaturen.", meister: false, rating: 5.0, reviewsCount: 2 },
 ];
 
 export default function DachdeckerClient() {
@@ -282,6 +291,42 @@ export default function DachdeckerClient() {
                   {d.name}
                 </h3>
 
+                {/* Reviews */}
+                {d.reviewsCount !== undefined && (
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <div className="flex items-center text-amber-400">
+                      {[...Array(5)].map((_, i) => (
+                        <svg
+                          key={i}
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          className={`w-3 h-3 ${
+                            i < Math.floor(d.rating || 0)
+                              ? "text-amber-400"
+                              : "text-gray-700"
+                          }`}
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.6 3.102-1.196 4.622c-.21.81.67 1.45 1.378.98L10 15.34l4.17 2.682c.708.47 1.587-.17 1.378-.98l-1.196-4.622 3.6-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      ))}
+                    </div>
+                    {d.reviewsCount > 0 ? (
+                      <span className="text-[10px] font-medium text-gray-400">
+                        {d.rating?.toFixed(1)} ({d.reviewsCount} Google-{d.reviewsCount === 1 ? "Bewertung" : "Bewertungen"})
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-medium text-gray-500 italic">
+                        Keine Google-Bewertungen
+                      </span>
+                    )}
+                  </div>
+                )}
+
                 {/* Notes */}
                 <p className="text-gray-400 text-sm mt-2 line-clamp-2 min-h-[2.5rem]">
                   {d.notes}
@@ -290,48 +335,96 @@ export default function DachdeckerClient() {
 
               {/* Action Buttons */}
               <div className="mt-5 pt-4 border-t border-gray-950 flex gap-2.5">
-                <a
-                  href={`mailto:${d.email}`}
-                  className="flex-1 bg-gray-950 hover:bg-gray-800 border border-gray-800 hover:border-gray-700 text-gray-300 hover:text-white transition-all text-xs font-semibold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                    stroke="currentColor"
-                    className="w-3.5 h-3.5"
+                {d.email ? (
+                  <a
+                    href={`mailto:${d.email}`}
+                    className="flex-1 bg-gray-950 hover:bg-gray-800 border border-gray-800 hover:border-gray-700 text-gray-300 hover:text-white transition-all text-xs font-semibold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
-                    />
-                  </svg>
-                  E-Mail
-                </a>
-                <a
-                  href={d.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 bg-indigo-900/40 hover:bg-indigo-600/80 border border-indigo-800 hover:border-indigo-500 text-indigo-300 hover:text-white transition-all text-xs font-semibold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                    stroke="currentColor"
-                    className="w-3.5 h-3.5"
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                      stroke="currentColor"
+                      className="w-3.5 h-3.5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
+                      />
+                    </svg>
+                    E-Mail
+                  </a>
+                ) : d.phone ? (
+                  <a
+                    href={`tel:${d.phone}`}
+                    className="flex-1 bg-gray-950 hover:bg-emerald-950/40 border border-gray-800 hover:border-emerald-850 text-emerald-400 hover:text-emerald-300 transition-all text-xs font-semibold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9s2.015-9 4.5-9m0 0a9.004 9.004 0 0 1 8.716 2.253M12 3a9.004 9.004 0 0 0-8.716 2.253M12 12h.008v.008H12V12Z"
-                    />
-                  </svg>
-                  Website
-                </a>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                      stroke="currentColor"
+                      className="w-3.5 h-3.5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.824-1.802-5.187-4.165-7-7l1.293-.97c.362-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"
+                      />
+                    </svg>
+                    Anrufen
+                  </a>
+                ) : (
+                  <span className="flex-1 bg-gray-950 border border-gray-900 text-gray-600 text-xs font-semibold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 cursor-not-allowed">
+                    Kein Kontakt
+                  </span>
+                )}
+
+                {d.website ? (
+                  <a
+                    href={d.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 bg-indigo-900/40 hover:bg-indigo-600/80 border border-indigo-800 hover:border-indigo-500 text-indigo-300 hover:text-white transition-all text-xs font-semibold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                      stroke="currentColor"
+                      className="w-3.5 h-3.5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9s2.015-9 4.5-9m0 0a9.004 9.004 0 0 1 8.716 2.253M12 3a9.004 9.004 0 0 0-8.716 2.253M12 12h.008v.008H12V12Z"
+                      />
+                    </svg>
+                    Website
+                  </a>
+                ) : (
+                  <span className="flex-1 bg-gray-950/40 border border-gray-900/60 text-gray-500 text-xs font-semibold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 cursor-not-allowed select-none">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                      stroke="currentColor"
+                      className="w-3.5 h-3.5 text-gray-600"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+                      />
+                    </svg>
+                    Keine Website
+                  </span>
+                )}
               </div>
             </div>
           ))}
