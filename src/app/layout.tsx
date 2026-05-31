@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Unsere Ideen",
-  description: "Geschäftsideen Übersicht",
+  title: "LeadBase – Lead-Verwaltung",
+  description: "Verwalten Sie Ihre Branchen-Leads zentral: Dachdecker, Architekten und mehr im Raum Bonn & Rhein-Sieg.",
 };
 
 export default function RootLayout({
